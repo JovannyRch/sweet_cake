@@ -38,15 +38,17 @@ class ProductController extends Controller
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|numeric',
-            'name' => 'required'
+            'name' => 'required',
+            'description' => 'required'
         ]);
 
-        $imageName = time().'.'.$request->image->extension();
+        $imageName = time() . '.' . $request->image->extension();
         $request->image->move(public_path('images'), $imageName);
 
         Product::create([
             'name' => $request->name,
             'price' => $request->price,
+            'description' => $request->description,
             'img' => $imageName,
         ]);
 
@@ -71,7 +73,10 @@ class ProductController extends Controller
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name,
-                'price' => $product->price
+                'price' => $product->price,
+                'description' => $product->description,
+                'img' => $product->img,
+                'ingredients' => $product->ingredients,
             ]
         ]);
     }
@@ -79,11 +84,22 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreProductRequest $request, Product $product)
+    public function update(Request $request, Product $product)
     {
-        $product->update($request->validated());
 
-        return Redirect::route('products.index');
+        $request->validate([
+            'price' => 'required|numeric',
+            'name' => 'required',
+            'description' => 'required'
+        ]);
+
+        $product->update([
+            'name' => $request->name,
+            'price' => $request->price,
+            'description' => $request->description
+        ]);
+
+        return back();
     }
 
     /**
@@ -94,16 +110,5 @@ class ProductController extends Controller
         $product->delete();
 
         return Redirect::route('products.index');
-    }
-
-    public function ingredients(Product $product)
-    {
-        return Inertia::render('Product/Ingredients', [
-            'product' => [
-                'id' => $product->id,
-                'name' => $product->name,
-                'price' => $product->price
-            ]
-        ]);
     }
 }
