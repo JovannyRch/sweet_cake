@@ -8,11 +8,16 @@ import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: 'Jovanny ramirez chimal',
-        username: 'jovannyrch',
-        email: 'jovannyrch@gmail.com    ',
-        password: 'bjmdtc1019',
-        password_confirmation: 'bjmdtc1019',
+        /*  name: 'Jovanny ramirez chimal',
+         username: 'jovannyrch',
+         email: 'jovannyrch@gmail.com    ',
+         password: 'bjmdtc1019',
+         password_confirmation: 'bjmdtc1019', */
+        name: '',
+        username: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
     });
 
     useEffect(() => {

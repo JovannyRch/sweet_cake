@@ -3,6 +3,7 @@
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,9 +32,11 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/home', function () {
+/* Route::get('/home', function () {
     return Inertia::render('User/Home');
 })->middleware(['auth'])->name('home');
+ */
+Route::get('/home', [UserController::class, 'index'])->middleware(['auth'])->name('home');
 
 
 Route::resource('products', ProductController::class, ['middleware' => 'auth']);
