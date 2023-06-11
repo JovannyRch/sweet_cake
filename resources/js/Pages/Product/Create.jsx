@@ -20,6 +20,7 @@ const Create = ({ auth, error }) => {
     return (
         <AdminAuthenticatedLayout user={auth.user}>
             <Head title="Crear producto" />
+
             <div className="container flex flex-col justify-center mx-auto">
                 <div>
                     <h1 className="mb-8 text-3xl font-bold">
@@ -105,7 +106,7 @@ const Create = ({ auth, error }) => {
                         <div className="mt-4">
                             <button
                                 type="submit"
-                                className="px-6 py-2 font-bold text-white bg-green-500 rounded"
+                                className="px-6 py-2 font-bold text-white bg-violet-600 rounded"
                             >
                                 Guardar
                             </button>

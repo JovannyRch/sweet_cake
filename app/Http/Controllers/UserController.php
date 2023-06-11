@@ -13,6 +13,10 @@ class UserController extends Controller
     {
 
         $products = Product::all();
+        foreach ($products as $product) {
+            $product->ingredients;
+        }
+
         return Inertia::render('User/Home', [
             'products' => $products,
         ]);

@@ -3,6 +3,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { InertiaLink, useForm } from "@inertiajs/inertia-react";
 import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+import { Card, IconButton, List, ListItem, Typography } from "@material-tailwind/react";
 
 const Edit = ({ auth, product }) => {
     const { data, setData, put, errors } = useForm({
@@ -130,39 +131,45 @@ const Edit = ({ auth, product }) => {
 
 
 
-                        <div className="max-w-3xl p-4 bg-white rounded shadow mt-10">
+                        <div className="max-w-3xl p-4 bg-white mt-10">
                             <h4 className="mb-8 text-2xl font-bold">
                                 Precios por ingrediente adicional
                             </h4>
                             {
-                                product.ingredients.length == 0 && <div className="mb-4 text-sm text-gray-600 ">
+                                product.ingredients.length === 0 && <div className="mb-4 text-sm text-gray-600 ">
                                     No hay ingredientes
                                 </div>
                             }
-                            <ul className="list-none w-1/2">
-                                {product.ingredients.map((ingredient) => (
-                                    <li key={ingredient.id} className="mb-4">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-gray-600">{ingredient.name}</span>
-                                                <span className="text-gray-600 font-bold">+ ${ingredient.price}</span>
-                                            </div>
-                                            <button
-                                                onClick={() => {
+
+                            {
+                                product.ingredients.length !== 0 && <Card className="w-96">
+                                    <List>
+                                        {product.ingredients.map((ingredient) => (<ListItem key={ingredient.id}>
+                                            <div className="flex w-full justify-between">
+                                                <div>
+                                                    <Typography variant="h6" color="blue-gray">
+                                                        {ingredient.name}
+                                                    </Typography>
+                                                    <Typography variant="small" color="gray" className="font-normal">
+                                                        ${ingredient.price}
+                                                    </Typography>
+                                                </div>
+
+                                                <IconButton color="red" onClick={() => {
                                                     if (confirm("¿Seguro que desea eliminar el ingrediente?")) {
                                                         Inertia.delete(route("ingredients.destroy", ingredient.id));
                                                     }
-                                                }}
-                                                tabIndex="-1"
-                                                type="button"
-                                                className="px-4 py-2 text-white bg-red-500 rounded"
-                                            >
-                                                X
-                                            </button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
+                                                }}>
+                                                    X
+                                                </IconButton>
+                                            </div>
+                                        </ListItem>
+                                        ))}
+
+                                    </List>
+                                </Card>
+                            }
+
                         </div>
 
                         <div className="max-w-3xl p-4 bg-white rounded shadow mt-10">
