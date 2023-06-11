@@ -5,20 +5,29 @@ import moment from "moment";
 import { Card, CardBody, List, ListItem, Typography } from "@material-tailwind/react";
 import { formatCurrency } from "../../Utils";
 import { getSize } from "../User/Pago";
+import { useForm } from '@inertiajs/inertia-react';
+
 
 const Show = ({ auth, order: initialOrder }) => {
+
+
+    const { data, setData, errors, put } = useForm(initialOrder);
+
+
 
     const order = useMemo(() => {
         return {
             ...initialOrder,
             products: JSON.parse(initialOrder.products),
             delivery_data: JSON.parse(initialOrder.delivery_data),
+            payment_method_data: JSON.parse(initialOrder.payment_method_data),
 
         }
     }, [initialOrder])
 
-    console.log(order);
-
+    const marcarComoEntregado = () => {
+        put(route("orders.update", order.id));
+    }
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -53,10 +62,12 @@ const Show = ({ auth, order: initialOrder }) => {
                                 <Typography className="font-semibold text-md mt-3">
                                     Datos de entrega
                                 </Typography>
-                                {
-                                    order.delivery_type === 'Sucursal' && <>
-                                        <Typography color="gray" >Nombre del cliente: {order?.delivery_data?.clientName ?? '-'}</Typography>
-                                        <Typography color="gray" >Fecha de entrega: {moment(order?.delivery_data?.date).format('DD-MM-YYYY') ?? '-'} a las  {order?.delivery_data?.time ?? '-'} hrs</Typography>
+                                <Typography color="gray" >Nombre del cliente: {order?.delivery_data?.clientName ?? '-'}</Typography>
+                                <Typography color="gray" >Fecha de entrega: {moment(order?.delivery_data?.date).format('DD-MM-YYYY') ?? '-'} a las  {order?.delivery_data?.time ?? '-'} hrs</Typography>
+
+                                {order.delivery_type === 'Domicilio' &&
+                                    <>
+                                        <Typography color="gray" >Dirección de entrega: {order?.delivery_data?.address ?? '-'}</Typography>
                                     </>
                                 }
 
@@ -73,7 +84,13 @@ const Show = ({ auth, order: initialOrder }) => {
                                     <span className="font-bold">Tipo de pago: </span>{order.payment_method_type}
                                 </Typography>
 
-
+                                {order.payment_method_type === 'Tarjeta' &&
+                                    <>
+                                        <Typography color="gray" >Nombre del titular: {order?.payment_method_data?.cardName ?? '-'}</Typography>
+                                        <Typography color="gray" >Número de tarjeta: {order?.payment_method_data?.cardNumber ?? '-'}</Typography>
+                                        <Typography color="gray" >Fecha: {moment(order?.payment_method_data?.cardDate).format('MM-YY') ?? '-'}</Typography>
+                                    </>
+                                }
 
                             </CardBody>
                         </Card>
@@ -120,13 +137,26 @@ const Show = ({ auth, order: initialOrder }) => {
 
 
                     <div className="flex mt-8 justify-between">
-                        <div>
+                        <div className="flex flex-col gap-5">
                             <h1 className="text-2xl font-bold">
                                 {order.status === 'pending' ? <span className="text-yellow-600">Pendiente de entrega</span> : <span className="text-green-600">Entregado</span>}
                             </h1>
+                            {order.status === 'pending' &&
+                                (<button
+                                    className="px-4 py-2 bg-green-600 text-white rounded-md focus:outline-none"
+                                    onClick={marcarComoEntregado}
+                                >
+                                    Marcar como entregado
+                                </button>)}
                         </div>
-                        <div className="flex flex-row justify-between">
+                        <div className="flex flex-col gap-5">
                             <h1 className="text-4xl font-bold text-violet-600">Total: {formatCurrency(order.total)}</h1>
+                            <button
+                                className="px-4 py-2 bg-violet-600 text-white rounded-md focus:outline-none"
+                                onClick={() => window.print()}
+                            >
+                                Imprimir
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -186,11 +186,42 @@ const FormTipoDeEnvio = ({ tipoEnvio, localForm, setLocalForm }) => {
         </div>
     }
 
-    return <div>TIpop de envio</div>
+    return <div>
+        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Datos de entrega</Typography>
+
+        <div className='flex flex-col px-5'>
+            <div className='flex flex-col mb-5 gap-4'>
+                <label >Nombre del cliente</label>
+                <input type='text' value={localForm.clientName} onChange={(e) => setLocalForm({ ...localForm, clientName: e.target.value })} />
+            </div>
+            <div className='flex flex-col mb-5 gap-4'>
+                <label >Dirección</label>
+                <input type='text' value={localForm.address} onChange={(e) => setLocalForm({ ...localForm, address: e.target.value })} />
+            </div>
+            {/* <div className='flex flex-col mb-5 gap-4'>
+                <label >Telefono</label>
+                <input type='text' value={localForm.phone} onChange={(e) => setLocalForm({ ...localForm, phone: e.target.value })} />
+            </div> */}
+            <div className='flex flex-col mb-5 gap-4'>
+                <label >Fecha de entrega</label>
+                <input type='date' value={localForm.date} onChange={(e) => setLocalForm({ ...localForm, date: e.target.value })} />
+            </div>
+            <div className='flex flex-col mb-5 gap-4'>
+                <label >Hora de entrega</label>
+                <select value={localForm.time} onChange={(e) => setLocalForm({ ...localForm, time: e.target.value })}>
+                    {
+                        deliveryTimes.map((time, index) => (
+                            <option key={index} value={time}>{time}</option>
+                        ))
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
 
 }
 
-const FormTipoDePago = ({ tipoPago, pagoForm, setPagoForm }) => {
+const FormTipoDePago = ({ tipoPago, pagoForm, setPagoForm, errorsCard }) => {
     if (tipoPago === TiposDePago.EFECTIVO) {
         return null;
     }
@@ -202,18 +233,22 @@ const FormTipoDePago = ({ tipoPago, pagoForm, setPagoForm }) => {
             <div className='flex flex-col mb-5 gap-4'>
                 <label >Número de tarjeta</label>
                 <input type='text' value={pagoForm.cardNumber} onChange={(e) => setPagoForm({ ...pagoForm, cardNumber: e.target.value })} />
+                <span className='text-red-600'>{errorsCard.messages.cardNumber}</span>
             </div>
             <div className='flex flex-col mb-5 gap-4'>
                 <label >Nombre del titular</label>
                 <input type='text' value={pagoForm.cardName} onChange={(e) => setPagoForm({ ...pagoForm, cardName: e.target.value })} />
+                <span className='text-red-600'>{errorsCard.messages.cardName}</span>
             </div>
             <div className='flex flex-col mb-5 gap-4'>
                 <label >Fecha de expiración</label>
                 <input type='date' value={pagoForm.cardDate} onChange={(e) => setPagoForm({ ...pagoForm, cardDate: e.target.value })} />
+                <span className='text-red-600'>{errorsCard.messages.cardDate}</span>
             </div>
             <div className='flex flex-col mb-5 gap-4'>
                 <label >CVV</label>
                 <input type='text' value={pagoForm.cardCvv} onChange={(e) => setPagoForm({ ...pagoForm, cardCvv: e.target.value })} />
+                <span className='text-red-600'>{errorsCard.messages.cardCvv}</span>
             </div>
         </div>
     </>
@@ -228,8 +263,11 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
     const [localForm, setLocalForm] = useState({
         clientName: '',
         date: '',
-        time: '6:00'
+        time: '6:00',
+        address: '',
+        /*  phone: '', */
     });
+
 
     const { data, setData, errors, post } = useForm({
         products: [],
@@ -246,6 +284,16 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
         cardDate: '',
         cardCvv: ''
     });
+
+    const [errorsCard, setErrorsCard] = useState({
+        messages: {
+            cardNumber: '',
+            cardName: '',
+            cardDate: '',
+            cardCvv: ''
+        },
+        hasErrors: false
+    })
 
 
     useEffect(() => {
@@ -265,6 +313,58 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
         }
     }, [isVisible])
 
+    useEffect(() => {
+        let hasErrors = false;
+        let messages = {
+            cardNumber: '',
+            cardName: '',
+            cardDate: '',
+            cardCvv: ''
+        }
+
+        if (pagoForm.cardNumber.length !== 16) {
+            messages.cardNumber = 'El número de tarjeta debe tener 16 dígitos';
+            hasErrors = true;
+        }
+
+        if (isNaN(pagoForm.cardNumber)) {
+            messages.cardNumber = 'El número de tarjeta debe ser un número';
+            hasErrors = true;
+        }
+
+
+        if (pagoForm.cardName.length < 5) {
+            messages.cardName = 'El nombre del titular debe tener al menos 5 caracteres';
+            hasErrors = true;
+        }
+
+        if (pagoForm.cardDate === '') {
+            messages.cardDate = 'La fecha de expiración es requerida';
+            hasErrors = true;
+        }
+
+        if (isNaN(pagoForm.cardCvv)) {
+            messages.cardCvv = 'El CVV debe ser un número';
+            hasErrors = true;
+        }
+
+        if (pagoForm.cardCvv.length !== 3) {
+            messages.cardCvv = 'El CVV debe tener 3 dígitos';
+            hasErrors = true;
+        }
+
+        setErrorsCard({
+            messages,
+            hasErrors
+        })
+
+
+
+
+
+    }, [pagoForm])
+
+
 
     useEffect(() => {
 
@@ -274,10 +374,10 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
             payment_method_type: tipoPago === TiposDePago.EFECTIVO ? 'Efectivo' : 'Tarjeta',
             payment_method_data: tipoPago === TiposDePago.EFECTIVO ? '' : JSON.stringify(pagoForm),
             delivery_type: tipoEnvio === TiposDeEnvio.SUCURSAL ? 'Sucursal' : 'Domicilio',
-            delivery_data: tipoEnvio === TiposDeEnvio.SUCURSAL ? JSON.stringify(localForm) : '',
+            delivery_data: JSON.stringify(localForm),
         })
 
-    }, [shoppingCart, total, tipoPago, tipoEnvio, localForm])
+    }, [shoppingCart, total, tipoPago, tipoEnvio, localForm, pagoForm])
 
 
     const handleSubmit = (e) => {
@@ -321,7 +421,7 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
             case 3:
                 return <>
                     <TipoDePago tipoPago={tipoPago} setTipoPago={setTipoPago} />
-                    <FormTipoDePago pagoForm={pagoForm} setPagoForm={setPagoForm} tipoPago={tipoPago} />
+                    <FormTipoDePago pagoForm={pagoForm} errorsCard={errorsCard} setPagoForm={setPagoForm} tipoPago={tipoPago} />
                 </>;
         }
         return null;
@@ -338,13 +438,20 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
             if (tipoEnvio === TiposDeEnvio.SUCURSAL) {
                 return localForm.clientName !== '' && localForm.date !== '' && localForm.time !== ''
             }
+            else {
+                return localForm.clientName !== '' && localForm.date !== '' && localForm.time !== '' && localForm.address !== ''
+            }
         }
-
         if (activeStep === 3) {
-            return tipoPago !== null;
+
+            if (tipoPago === TiposDePago.EFECTIVO) {
+                return true;
+            }
+
+            return !errorsCard.hasErrors && pagoForm.cardNumber !== '' && pagoForm.cardName !== '' && pagoForm.cardDate !== '' && pagoForm.cardCvv !== '';
         }
         return false;
-    }, [activeStep, tipoEnvio, localForm, shoppingCart]);
+    }, [activeStep, tipoEnvio, localForm, shoppingCart, pagoForm, errorsCard, tipoPago]);
 
 
 
