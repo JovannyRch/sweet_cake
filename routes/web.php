@@ -29,14 +29,15 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
+/* Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard'); */
 
 /* Route::get('/home', function () {
     return Inertia::render('User/Home');
 })->middleware(['auth'])->name('home');
  */
+Route::get('/dashboard', [OrderController::class, 'index'])->middleware(['auth'])->name('dashboard');
 Route::get('/home', [UserController::class, 'index'])->middleware(['auth'])->name('home');
 
 

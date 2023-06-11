@@ -6,6 +6,7 @@ import { Card, CardBody, List, ListItem, Typography } from "@material-tailwind/r
 import { formatCurrency } from "../../Utils";
 import { getSize } from "../User/Pago";
 import { useForm } from '@inertiajs/inertia-react';
+import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
 
 
 const Show = ({ auth, order: initialOrder }) => {
@@ -29,8 +30,8 @@ const Show = ({ auth, order: initialOrder }) => {
         put(route("orders.update", order.id));
     }
 
-    return (
-        <AuthenticatedLayout user={auth.user}>
+    const renderBody = () =>
+        <>
             <Head title="Orden" />
 
 
@@ -161,8 +162,19 @@ const Show = ({ auth, order: initialOrder }) => {
                     </div>
                 </div>
 
-            </div>
+            </div></>
 
+
+    if (auth.user.type === 'admin') {
+        return <AdminAuthenticatedLayout user={auth.user}>
+            {renderBody()}
+        </AdminAuthenticatedLayout>
+    }
+
+
+    return (
+        <AuthenticatedLayout user={auth.user}>
+            {renderBody()}
         </AuthenticatedLayout>
     );
 };

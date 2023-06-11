@@ -16,10 +16,24 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $oders = Order::all();
+
+        $penging_orders = Order::where('status', 'pending')->get();
+        $delivered_orders = Order::where('status', 'Entregado')->get();
+
+        foreach ($penging_orders as $order) {
+            $order->products = json_decode($order->products);
+            $order->user = User::find($order->user_id);
+        }
+
+        foreach ($delivered_orders as $order) {
+            $order->products = json_decode($order->products);
+            $order->user = User::find($order->user_id);
+        }
+
 
         return Inertia::render('Order/Index', [
-            'orders' => $oders
+            'penging_orders' => $penging_orders,
+            'delivered_orders' => $delivered_orders
         ]);
     }
 
