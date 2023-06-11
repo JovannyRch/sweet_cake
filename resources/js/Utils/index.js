@@ -12,6 +12,7 @@ function cleanUpProducts(products) {
             name: item.name,
             price: item.price,
             multiplier: item.multiplier,
+            type: item?.type ?? "Redondo",
         };
 
         if (item.extraIngredients.length > 0) {

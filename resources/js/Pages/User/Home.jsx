@@ -26,7 +26,8 @@ const customProductDetaultValue = {
     ingredients: [],
     multiplier: 1,
     extraIngredients: [],
-    product: {}
+    product: {},
+    type: 'Redondo'
 }
 
 const sizeOptions = [
@@ -48,7 +49,16 @@ const sizeOptions = [
     }
 ]
 
-export default function Home({ auth, products, created_order_id }) {
+const typeOptions = [
+    'Redondo',
+    'Cuadrado',
+    'Rectangular',
+    'Media luna',
+    'Estrella',
+    'Numero'
+];
+
+export default function Home({ auth, products }) {
 
     const [shoppingCart, setshoppingCart] = useState([]);
     const [shoppingCartBackup, setshoppingCartBackup] = useState([])
@@ -95,6 +105,7 @@ export default function Home({ auth, products, created_order_id }) {
     }
 
     const calculateTotal = () => {
+        console.log("shoppingCart", shoppingCart);
         let total = 0;
         shoppingCart.forEach(product => {
             total += product.price * product.multiplier;
@@ -103,6 +114,7 @@ export default function Home({ auth, products, created_order_id }) {
     }
 
     useEffect(calculateTotal, [shoppingCart])
+
 
 
 
@@ -174,6 +186,16 @@ export default function Home({ auth, products, created_order_id }) {
                         </Select>
                     </div>
 
+                    <div className="flex flex-col mb-5">
+                        <Select label="Selecciona forma del pastel" value={customProduct.type} onChange={(value) => setCustomProduct((prev) => ({ ...prev, type: value }))}>
+                            {
+                                typeOptions.map((type) => (
+                                    <Option key={type} value={type}>{type}</Option>
+                                ))
+                            }
+                        </Select>
+                    </div>
+
                     {
                         customProduct?.ingredients.length > 0 && <>
                             <Typography>
@@ -215,7 +237,7 @@ export default function Home({ auth, products, created_order_id }) {
                             </List>
                         </>
                     }
-                    <div className='flex justify-between px-4 mt-10'>
+                    <div className='flex justify-end gap-5 px-4 mt-10'>
                         <Typography className="font-bold text-black">
                             TOTAL:
                         </Typography>

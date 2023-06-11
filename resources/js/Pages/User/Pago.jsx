@@ -107,6 +107,9 @@ const Summary = ({ shoppingCart, setShoppingCart }) => {
                                         <div>
                                             <span className='font-bold'>Tamaño:</span> {getSize(item.multiplier)}
                                         </div>
+                                        <div className='mt-5'>
+                                            <span className='font-bold'>Forma:</span> {item.type}
+                                        </div>
                                         {
                                             item.extraIngredients.length > 0 && <div className='mt-5'>
                                                 <h3 className='font-bold mb-3'>Ingredientes extra</h3>

@@ -115,6 +115,9 @@ const Show = ({ auth, order: initialOrder }) => {
                                                 <div>
                                                     <span className='font-bold'>Tamaño:</span> {getSize(item.multiplier)}
                                                 </div>
+                                                <div className="mt-5">
+                                                    <span className='font-bold'>Forma:</span> {item?.type ?? 'Redondo'}
+                                                </div>
                                                 {
                                                     item?.ingredients?.length > 0 && <div className='mt-5'>
                                                         <h3 className='font-bold mb-3'>Ingredientes extra</h3>
