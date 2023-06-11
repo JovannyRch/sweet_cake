@@ -48,7 +48,7 @@ const sizeOptions = [
     }
 ]
 
-export default function Home({ auth, products }) {
+export default function Home({ auth, products, created_order_id }) {
 
     const [shoppingCart, setshoppingCart] = useState([]);
     const [shoppingCartBackup, setshoppingCartBackup] = useState([])
@@ -103,9 +103,6 @@ export default function Home({ auth, products }) {
     }
 
     useEffect(calculateTotal, [shoppingCart])
-
-
-
 
 
 

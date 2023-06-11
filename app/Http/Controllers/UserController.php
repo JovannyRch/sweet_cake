@@ -19,6 +19,8 @@ class UserController extends Controller
 
         return Inertia::render('User/Home', [
             'products' => $products,
+            'message' => session('message'),
+            'created_order_id' => session('created_order_id'),
         ]);
     }
 }

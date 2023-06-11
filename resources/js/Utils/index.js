@@ -5,4 +5,26 @@ function formatCurrency(number) {
     });
 }
 
-export { formatCurrency };
+function cleanUpProducts(products) {
+    return products.map((item) => {
+        const product = {
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            multiplier: item.multiplier,
+        };
+
+        if (item.extraIngredients.length > 0) {
+            product.ingredients = item.extraIngredients.map((ingredient) => {
+                return {
+                    name: ingredient.name,
+                    price: ingredient.price,
+                };
+            });
+        }
+
+        return product;
+    });
+}
+
+export { formatCurrency, cleanUpProducts };

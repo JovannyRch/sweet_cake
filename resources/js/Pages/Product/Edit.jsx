@@ -29,7 +29,7 @@ const Edit = ({ auth, product }) => {
     }
 
     function destroy() {
-        if (confirm("¿Seguro que desea eliminar el producto")) {
+        if (confirm("¿Seguro que desea eliminar el producto?")) {
             Inertia.delete(route("products.destroy", product.id));
         }
     }

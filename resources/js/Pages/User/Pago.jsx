@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Typography,
     Button,
@@ -8,13 +8,58 @@ import {
     DialogFooter,
     List,
     ListItem,
-    Stepper, Step, IconButton, Card, CardBody
+    Stepper, Step, IconButton, Card, CardBody, Radio
 } from "@material-tailwind/react";
-import { XMarkIcon, CogIcon, ListBulletIcon } from "@heroicons/react/24/outline";
-import { formatCurrency } from '../../Utils';
+import { XMarkIcon, ArchiveBoxIcon, ListBulletIcon, Bars2Icon, BanknotesIcon } from "@heroicons/react/24/outline";
+import { cleanUpProducts, formatCurrency } from '../../Utils';
+import { useMemo } from 'react';
+import { useForm } from '@inertiajs/inertia-react';
+import moment from 'moment';
 
 
-const getSize = (multiplier) => {
+const TiposDeEnvio = {
+    DOMICILIO: 1,
+    SUCURSAL: 2
+}
+
+const TiposDePago = {
+    EFECTIVO: 1,
+    TARJETA: 2
+}
+
+const deliveryTimes = [
+    '6:00',
+    '6:30',
+    '7:00',
+    '7:30',
+    '8:00',
+    '8:30',
+    '9:00',
+    '9:30',
+    '10:00',
+    '10:30',
+    '11:00',
+    '11:30',
+    '12:00',
+    '12:30',
+    '13:00',
+    '13:30',
+    '14:00',
+    '14:30',
+    '15:00',
+    '15:30',
+    '16:00',
+    '16:30',
+    '17:00',
+    '17:30',
+    '18:00',
+    '18:30',
+    '19:00',
+    '19:30',
+    '20:00',
+]
+
+export const getSize = (multiplier) => {
     switch (multiplier) {
         case 1:
             return '20 personas'
@@ -88,20 +133,175 @@ const Summary = ({ shoppingCart, setShoppingCart }) => {
 }
 
 
+const TipoDeEnvio = ({ tipoEnvio, setTipoEnvio }) => {
+    return <>
+        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Tipo de envío</Typography>
+        <div className='flex flex-col px-5'>
+            <div className='flex flex-col mb-5 gap-4'>
+                <Radio name='tipoEnvio' checked={tipoEnvio === TiposDeEnvio.SUCURSAL} onClick={() => setTipoEnvio(TiposDeEnvio.SUCURSAL)} value={TiposDeEnvio.SUCURSAL} label="Recoger en sucursal" />
+                <Radio name='tipoEnvio' checked={tipoEnvio === TiposDeEnvio.DOMICILIO} onClick={() => setTipoEnvio(TiposDeEnvio.DOMICILIO)} value={TiposDeEnvio.DOMICILIO} label="Envio a domicilio" />
+            </div>
+        </div>
+    </>
+}
+
+const TipoDePago = ({ tipoPago, setTipoPago }) => {
+    return <>
+        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Tipo de pago</Typography>
+        <div className='flex px-5'>
+            <div className='flex mb-5 gap-4'>
+                <Radio name='tipoPago' checked={tipoPago === TiposDePago.EFECTIVO} onClick={() => setTipoPago(TiposDePago.EFECTIVO)} value={TiposDePago.EFECTIVO} label="Pago en efectivo" />
+                <Radio name='tipoPago' checked={tipoPago === TiposDePago.TARJETA} onClick={() => setTipoPago(TiposDePago.TARJETA)} value={TiposDePago.TARJETA} label="Pago con tarjeta" />
+            </div>
+        </div>
+    </>
+}
+
+const FormTipoDeEnvio = ({ tipoEnvio, localForm, setLocalForm }) => {
+
+    if (tipoEnvio === TiposDeEnvio.SUCURSAL) {
+        return <div>
+            <Typography color="gray" className="font-bold px-5 text-lg mb-5">Datos de entrega</Typography>
+
+            <div className='flex flex-col px-5'>
+                <div className='flex flex-col mb-5 gap-4'>
+                    <label >Nombre del cliente</label>
+                    <input type='text' value={localForm.clientName} onChange={(e) => setLocalForm({ ...localForm, clientName: e.target.value })} />
+                </div>
+                <div className='flex flex-col mb-5 gap-4'>
+                    <label >Fecha de entrega</label>
+                    <input type='date' value={localForm.date} onChange={(e) => setLocalForm({ ...localForm, date: e.target.value })} />
+                </div>
+                <div className='flex flex-col mb-5 gap-4'>
+                    <label >Hora de entrega</label>
+                    <select value={localForm.time} onChange={(e) => setLocalForm({ ...localForm, time: e.target.value })}>
+                        {
+                            deliveryTimes.map((time, index) => (
+                                <option key={index} value={time}>{time}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    }
+
+    return <div>TIpop de envio</div>
+
+}
+
+const FormTipoDePago = ({ tipoPago, pagoForm, setPagoForm }) => {
+    if (tipoPago === TiposDePago.EFECTIVO) {
+        return null;
+    }
+
+    return <>
+        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Datos de pago</Typography>
+
+        <div className='flex flex-col px-5 overflow-scroll' style={{ maxHeight: 200 }}>
+            <div className='flex flex-col mb-5 gap-4'>
+                <label >Número de tarjeta</label>
+                <input type='text' value={pagoForm.cardNumber} onChange={(e) => setPagoForm({ ...pagoForm, cardNumber: e.target.value })} />
+            </div>
+            <div className='flex flex-col mb-5 gap-4'>
+                <label >Nombre del titular</label>
+                <input type='text' value={pagoForm.cardName} onChange={(e) => setPagoForm({ ...pagoForm, cardName: e.target.value })} />
+            </div>
+            <div className='flex flex-col mb-5 gap-4'>
+                <label >Fecha de expiración</label>
+                <input type='date' value={pagoForm.cardDate} onChange={(e) => setPagoForm({ ...pagoForm, cardDate: e.target.value })} />
+            </div>
+            <div className='flex flex-col mb-5 gap-4'>
+                <label >CVV</label>
+                <input type='text' value={pagoForm.cardCvv} onChange={(e) => setPagoForm({ ...pagoForm, cardCvv: e.target.value })} />
+            </div>
+        </div>
+    </>
+}
+
+
 const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
 
     const [activeStep, setActiveStep] = useState(0)
+    const [tipoEnvio, setTipoEnvio] = useState(TiposDeEnvio.SUCURSAL);
+    const [tipoPago, setTipoPago] = useState(TiposDePago.EFECTIVO);
+    const [localForm, setLocalForm] = useState({
+        clientName: '',
+        date: '',
+        time: '6:00'
+    });
+
+    const { data, setData, errors, post } = useForm({
+        products: [],
+        payment_method_type: '',
+        payment_method_data: '',
+        total: 0,
+        delivery_data: '',
+        delivery_type: '',
+    });
+
+    const [pagoForm, setPagoForm] = useState({
+        cardNumber: '',
+        cardName: '',
+        cardDate: '',
+        cardCvv: ''
+    });
+
+
+    useEffect(() => {
+        if (isVisible) {
+            setActiveStep(0);
+            setTipoEnvio(TiposDeEnvio.SUCURSAL)
+            setTipoPago(TiposDePago.EFECTIVO)
+            setLocalForm({
+                clientName: '',
+                date: moment(new Date()).format('YYYY-MM-DD'),
+                time: '6:00'
+            })
+            setData({
+                products: JSON.stringify(shoppingCart),
+                total: total,
+            })
+        }
+    }, [isVisible])
+
+
+    useEffect(() => {
+
+        setData({
+            products: JSON.stringify(cleanUpProducts(shoppingCart)),
+            total: total,
+            payment_method_type: tipoPago === TiposDePago.EFECTIVO ? 'Efectivo' : 'Tarjeta',
+            payment_method_data: tipoPago === TiposDePago.EFECTIVO ? '' : JSON.stringify(pagoForm),
+            delivery_type: tipoEnvio === TiposDeEnvio.SUCURSAL ? 'Sucursal' : 'Domicilio',
+            delivery_data: tipoEnvio === TiposDeEnvio.SUCURSAL ? JSON.stringify(localForm) : '',
+        })
+
+    }, [shoppingCart, total, tipoPago, tipoEnvio, localForm])
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        post(route("orders.store"));
     }
 
-    const handleNext = () => {
+    const handleNext = (e) => {
+        e.preventDefault();
+
         if (activeStep === 0) {
             setActiveStep(1)
         }
+        if (activeStep === 1) {
+            setActiveStep(2)
+        }
 
+        if (activeStep === 2) {
+            setActiveStep(3)
+        }
+
+        if (activeStep === 3) {
+            setActiveStep(4)
+        }
     }
 
     const handleBack = () => {
@@ -109,6 +309,44 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
     }
 
     const isLastStep = activeStep === 3;
+
+    const renderCurrentStep = () => {
+        switch (activeStep) {
+            case 0:
+                return <Summary shoppingCart={shoppingCart} setShoppingCart={setShoppingCart} />
+            case 1:
+                return <TipoDeEnvio tipoEnvio={tipoEnvio} setTipoEnvio={setTipoEnvio} />
+            case 2:
+                return <FormTipoDeEnvio tipoEnvio={tipoEnvio} localForm={localForm} setLocalForm={setLocalForm} />
+            case 3:
+                return <>
+                    <TipoDePago tipoPago={tipoPago} setTipoPago={setTipoPago} />
+                    <FormTipoDePago pagoForm={pagoForm} setPagoForm={setPagoForm} tipoPago={tipoPago} />
+                </>;
+        }
+        return null;
+    }
+
+    const canGoNext = useMemo(() => {
+        if (activeStep === 0) {
+            return shoppingCart.length > 0
+        }
+        if (activeStep === 1) {
+            return tipoEnvio !== null
+        }
+        if (activeStep === 2) {
+            if (tipoEnvio === TiposDeEnvio.SUCURSAL) {
+                return localForm.clientName !== '' && localForm.date !== '' && localForm.time !== ''
+            }
+        }
+
+        if (activeStep === 3) {
+            return tipoPago !== null;
+        }
+        return false;
+    }, [activeStep, tipoEnvio, localForm, shoppingCart]);
+
+
 
     return (
         <Dialog open={isVisible}  >
@@ -133,15 +371,18 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
                             <ListBulletIcon className="h-5 w-5" />
                         </Step>
                         <Step onClick={() => setActiveStep(1)}>
-                            <ListBulletIcon className="h-5 w-5" />
+                            <ArchiveBoxIcon className="h-5 w-5" />
                         </Step>
                         <Step onClick={() => setActiveStep(2)}>
-                            <ListBulletIcon className="h-5 w-5" />
+                            <Bars2Icon className="h-5 w-5" />
+                        </Step>
+                        <Step onClick={() => setActiveStep(3)}>
+                            <BanknotesIcon className="h-5 w-5" />
                         </Step>
                     </Stepper>
                 </div>
 
-                {activeStep === 0 && <Summary shoppingCart={shoppingCart} setShoppingCart={setShoppingCart} />}
+                {renderCurrentStep()}
 
             </DialogBody>
             <DialogFooter>
@@ -159,9 +400,9 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
                                 Regresar
                             </Button>
                         }
-                        <Button variant={isLastStep ? 'filled' : 'text'} color="indigo" onClick={handleNext}>
+                        <Button disabled={!canGoNext} variant={isLastStep ? 'filled' : 'text'} color="indigo" onClick={isLastStep ? handleSubmit : handleNext}>
                             <span>
-                                {activeStep === 3 ? 'Finalizar' : 'Siguiente'}
+                                {isLastStep ? 'Finalizar' : 'Siguiente'}
                             </span>
                         </Button>
                     </div>

@@ -107,6 +107,11 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+
+        foreach ($product->ingredients as $ingredient) {
+            $ingredient->delete();
+        }
+
         $product->delete();
 
         return Redirect::route('products.index');

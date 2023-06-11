@@ -8,3 +8,4 @@ https://larainfo.com/blogs/laravel-inertia-js-crud-with-react-tutorial
 
 php artisan make:model Post -mcr
 php artisan make:model Ingredient -mcr
+php artisan make:model Order -mcr
