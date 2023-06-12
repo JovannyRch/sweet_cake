@@ -1,8 +1,9 @@
 import React from "react";
-import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-react";
 import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+import axios from "axios";
+import { Inertia } from "@inertiajs/inertia";
 
 const Create = ({ auth, error }) => {
     const { data, setData, errors, post, progress } = useForm({
@@ -14,7 +15,24 @@ const Create = ({ auth, error }) => {
 
     function handleSubmit(e) {
         e.preventDefault();
-        post(route("products.store"));
+        /* post(route("products.store")); */
+
+        let formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('price', data.price);
+        formData.append('description', data.description);
+        formData.append('image', data.image);
+        axios.post('/api/products', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                Inertia.visit(route("products.index"));
+            })
+            .catch(error => {
+
+            });
     }
 
     return (

@@ -20,4 +20,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
+
+
 /* Route::get('/products', [ApiController::class, 'getProducts']); */
+
+//Crear producto
+
+Route::post('/products', [ApiController::class, 'createProduct']);
+Route::put('/order', [ApiController::class, 'updateOrder']);
