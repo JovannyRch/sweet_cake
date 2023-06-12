@@ -7,6 +7,7 @@ import { formatCurrency } from "../../Utils";
 import { getSize } from "../User/Pago";
 import { useForm } from '@inertiajs/inertia-react';
 import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
+import axios from "axios";
 
 
 const Show = ({ auth, order: initialOrder }) => {
@@ -27,7 +28,11 @@ const Show = ({ auth, order: initialOrder }) => {
     }, [initialOrder])
 
     const marcarComoEntregado = () => {
-        put(route("orders.update", order.id));
+        /* put(route("orders.update", order.id)); */
+        axios.put(`/api/order`, { id: order.id }).then((response) => {
+            //Refresh page
+            window.location.reload();
+        })
     }
 
     const renderBody = () =>
@@ -60,7 +65,7 @@ const Show = ({ auth, order: initialOrder }) => {
                                 </Typography>
 
 
-                                <Typography className="font-semibold text-md mt-3">
+                                <Typography className="mt-3 font-semibold text-md">
                                     Datos de entrega
                                 </Typography>
                                 <Typography color="gray" >Nombre del cliente: {order?.delivery_data?.clientName ?? '-'}</Typography>
@@ -98,7 +103,7 @@ const Show = ({ auth, order: initialOrder }) => {
                     </div>
 
 
-                    <h1 className="text-2xl font-bold mt-5">Productos</h1>
+                    <h1 className="mt-5 text-2xl font-bold">Productos</h1>
                     <List>
                         {
                             order.products.map((item, index) => (
@@ -107,8 +112,8 @@ const Show = ({ auth, order: initialOrder }) => {
                                         <CardBody>
                                             <div className='flex flex-col w-full'>
                                                 <div className='flex justify-between w-full mb-5' >
-                                                    <Typography color="gray" className="font-bold text-lg">{item.name}</Typography>
-                                                    <Typography color="gray" className="font-bold text-lg">{formatCurrency(item.price * item.multiplier)}</Typography>
+                                                    <Typography color="gray" className="text-lg font-bold">{item.name}</Typography>
+                                                    <Typography color="gray" className="text-lg font-bold">{formatCurrency(item.price * item.multiplier)}</Typography>
 
 
                                                 </div>
@@ -120,7 +125,7 @@ const Show = ({ auth, order: initialOrder }) => {
                                                 </div>
                                                 {
                                                     item?.ingredients?.length > 0 && <div className='mt-5'>
-                                                        <h3 className='font-bold mb-3'>Ingredientes extra</h3>
+                                                        <h3 className='mb-3 font-bold'>Ingredientes extra</h3>
                                                         <ul>
                                                             {
                                                                 item?.ingredients?.map((ingredient, index) => (
@@ -140,14 +145,14 @@ const Show = ({ auth, order: initialOrder }) => {
                     </List>
 
 
-                    <div className="flex mt-8 justify-between">
+                    <div className="flex justify-between mt-8">
                         <div className="flex flex-col gap-5">
                             <h1 className="text-2xl font-bold">
                                 {order.status === 'pending' ? <span className="text-yellow-600">Pendiente de entrega</span> : <span className="text-green-600">Entregado</span>}
                             </h1>
                             {order.status === 'pending' &&
                                 (<button
-                                    className="px-4 py-2 bg-green-600 text-white rounded-md focus:outline-none"
+                                    className="px-4 py-2 text-white bg-green-600 rounded-md focus:outline-none"
                                     onClick={marcarComoEntregado}
                                 >
                                     Marcar como entregado
@@ -156,7 +161,7 @@ const Show = ({ auth, order: initialOrder }) => {
                         <div className="flex flex-col gap-5">
                             <h1 className="text-4xl font-bold text-violet-600">Total: {formatCurrency(order.total)}</h1>
                             <button
-                                className="px-4 py-2 bg-violet-600 text-white rounded-md focus:outline-none"
+                                className="px-4 py-2 text-white rounded-md bg-violet-600 focus:outline-none"
                                 onClick={() => window.print()}
                             >
                                 Imprimir

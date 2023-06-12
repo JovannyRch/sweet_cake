@@ -28,7 +28,8 @@ const Create = ({ auth, error }) => {
             }
         })
             .then(response => {
-                Inertia.visit(route("products.index"));
+                /* Inertia.visit(route("products.index")); */
+                window.location.href = route("products.index");
             })
             .catch(error => {
 

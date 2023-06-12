@@ -4,6 +4,7 @@ import { useForm } from "@inertiajs/inertia-react";
 import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { Card, IconButton, List, ListItem, Typography } from "@material-tailwind/react";
+import axios from "axios";
 
 const Edit = ({ auth, product }) => {
     const { data, setData, put, errors } = useForm({
@@ -20,17 +21,48 @@ const Edit = ({ auth, product }) => {
 
     function handleSubmit(e) {
         e.preventDefault();
-        put(route("products.update", product.id));
+        axios.put(`/api/products`, { ...data, id: product.id }).then((response) => {
+            window.location.reload();
+        }
+        ).catch((error) => {
+            alert("Error al actualizar el producto")
+        });
     }
 
     function handleAddIngredient(e) {
         e.preventDefault();
-        post(route("ingredients.store"));
+        /* post(route("ingredients.store")); */
+        axios.post(`/api/ingredients`, ingredient).then((response) => {
+            window.location.reload();
+        }
+        ).catch((error) => {
+            alert("Error al agregar el ingrediente")
+        }
+        );
+    }
+
+    function handleDeleteIngredient(id) {
+        if (confirm("¿Seguro que desea eliminar el ingrediente?")) {
+            axios.delete(`/api/ingredients/${id}`).then((response) => {
+                window.location.reload();
+            }
+            ).catch((error) => {
+                alert("Error al eliminar el ingrediente")
+            }
+            );
+        }
     }
 
     function destroy() {
         if (confirm("¿Seguro que desea eliminar el producto?")) {
-            Inertia.delete(route("products.destroy", product.id));
+            axios.delete(`/api/products/${product.id}`).then((response) => {
+                window.location.href = route("products.index");
+            }
+            ).catch((error) => {
+                alert("Error al eliminar el producto")
+            }
+            );
+
         }
     }
 
@@ -156,9 +188,7 @@ const Edit = ({ auth, product }) => {
                                                 </div>
 
                                                 <IconButton color="red" onClick={() => {
-                                                    if (confirm("¿Seguro que desea eliminar el ingrediente?")) {
-                                                        Inertia.delete(route("ingredients.destroy", ingredient.id));
-                                                    }
+                                                    handleDeleteIngredient(ingredient.id);
                                                 }}>
                                                     X
                                                 </IconButton>

@@ -27,4 +27,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Crear producto
 
 Route::post('/products', [ApiController::class, 'createProduct']);
+Route::put('/products', [ApiController::class, 'updateProduct']);
+
+// add delete product route
+Route::delete('/products/{id}', [ApiController::class, 'deleteProduct']);
+
 Route::put('/order', [ApiController::class, 'updateOrder']);
+Route::post('/order', [ApiController::class, 'createOrder']);
+
+/* Add ingrediente route */
+Route::post('/ingredients', [ApiController::class, 'createIngredient']);
+
+/* Delete ingredient */
+Route::delete('/ingredients/{id}', [ApiController::class, 'deleteIngredient']);

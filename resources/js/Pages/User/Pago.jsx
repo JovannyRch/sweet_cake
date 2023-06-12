@@ -15,6 +15,7 @@ import { cleanUpProducts, formatCurrency } from '../../Utils';
 import { useMemo } from 'react';
 import { useForm } from '@inertiajs/inertia-react';
 import moment from 'moment';
+import axios from 'axios';
 
 
 const TiposDeEnvio = {
@@ -85,7 +86,7 @@ const Summary = ({ shoppingCart, setShoppingCart }) => {
 
     return <>
 
-        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Resumen de pedido</Typography>
+        <Typography color="gray" className="px-5 mb-5 text-lg font-bold">Resumen de pedido</Typography>
         <div className="overflow-scroll" style={{ maxHeight: 350 }}>
             <List>
                 {
@@ -95,12 +96,12 @@ const Summary = ({ shoppingCart, setShoppingCart }) => {
                                 <CardBody>
                                     <div className='flex flex-col w-full'>
                                         <div className='flex justify-between w-full mb-5' >
-                                            <Typography color="gray" className="font-bold text-lg">{item.name}</Typography>
-                                            <Typography color="gray" className="font-bold text-lg">{formatCurrency(item.price * item.multiplier)}</Typography>
+                                            <Typography color="gray" className="text-lg font-bold">{item.name}</Typography>
+                                            <Typography color="gray" className="text-lg font-bold">{formatCurrency(item.price * item.multiplier)}</Typography>
 
                                             <div>
                                                 <IconButton color='red' onClick={() => handleRemoveItem(index)}>
-                                                    <XMarkIcon className="h-5 w-5" />
+                                                    <XMarkIcon className="w-5 h-5" />
                                                 </IconButton>
                                             </div>
                                         </div>
@@ -112,7 +113,7 @@ const Summary = ({ shoppingCart, setShoppingCart }) => {
                                         </div>
                                         {
                                             item.extraIngredients.length > 0 && <div className='mt-5'>
-                                                <h3 className='font-bold mb-3'>Ingredientes extra</h3>
+                                                <h3 className='mb-3 font-bold'>Ingredientes extra</h3>
                                                 <ul>
                                                     {
                                                         item.extraIngredients.map((ingredient, index) => (
@@ -138,9 +139,9 @@ const Summary = ({ shoppingCart, setShoppingCart }) => {
 
 const TipoDeEnvio = ({ tipoEnvio, setTipoEnvio }) => {
     return <>
-        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Tipo de envío</Typography>
+        <Typography color="gray" className="px-5 mb-5 text-lg font-bold">Tipo de envío</Typography>
         <div className='flex flex-col px-5'>
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <Radio name='tipoEnvio' checked={tipoEnvio === TiposDeEnvio.SUCURSAL} onClick={() => setTipoEnvio(TiposDeEnvio.SUCURSAL)} value={TiposDeEnvio.SUCURSAL} label="Recoger en sucursal" />
                 <Radio name='tipoEnvio' checked={tipoEnvio === TiposDeEnvio.DOMICILIO} onClick={() => setTipoEnvio(TiposDeEnvio.DOMICILIO)} value={TiposDeEnvio.DOMICILIO} label="Envio a domicilio" />
             </div>
@@ -150,9 +151,9 @@ const TipoDeEnvio = ({ tipoEnvio, setTipoEnvio }) => {
 
 const TipoDePago = ({ tipoPago, setTipoPago }) => {
     return <>
-        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Tipo de pago</Typography>
+        <Typography color="gray" className="px-5 mb-5 text-lg font-bold">Tipo de pago</Typography>
         <div className='flex px-5'>
-            <div className='flex mb-5 gap-4'>
+            <div className='flex gap-4 mb-5'>
                 <Radio name='tipoPago' checked={tipoPago === TiposDePago.EFECTIVO} onClick={() => setTipoPago(TiposDePago.EFECTIVO)} value={TiposDePago.EFECTIVO} label="Pago en efectivo" />
                 <Radio name='tipoPago' checked={tipoPago === TiposDePago.TARJETA} onClick={() => setTipoPago(TiposDePago.TARJETA)} value={TiposDePago.TARJETA} label="Pago con tarjeta" />
             </div>
@@ -164,18 +165,18 @@ const FormTipoDeEnvio = ({ tipoEnvio, localForm, setLocalForm }) => {
 
     if (tipoEnvio === TiposDeEnvio.SUCURSAL) {
         return <div>
-            <Typography color="gray" className="font-bold px-5 text-lg mb-5">Datos de entrega</Typography>
+            <Typography color="gray" className="px-5 mb-5 text-lg font-bold">Datos de entrega</Typography>
 
             <div className='flex flex-col px-5'>
-                <div className='flex flex-col mb-5 gap-4'>
+                <div className='flex flex-col gap-4 mb-5'>
                     <label >Nombre del cliente</label>
                     <input type='text' value={localForm.clientName} onChange={(e) => setLocalForm({ ...localForm, clientName: e.target.value })} />
                 </div>
-                <div className='flex flex-col mb-5 gap-4'>
+                <div className='flex flex-col gap-4 mb-5'>
                     <label >Fecha de entrega</label>
                     <input type='date' value={localForm.date} onChange={(e) => setLocalForm({ ...localForm, date: e.target.value })} />
                 </div>
-                <div className='flex flex-col mb-5 gap-4'>
+                <div className='flex flex-col gap-4 mb-5'>
                     <label >Hora de entrega</label>
                     <select value={localForm.time} onChange={(e) => setLocalForm({ ...localForm, time: e.target.value })}>
                         {
@@ -190,26 +191,26 @@ const FormTipoDeEnvio = ({ tipoEnvio, localForm, setLocalForm }) => {
     }
 
     return <div>
-        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Datos de entrega</Typography>
+        <Typography color="gray" className="px-5 mb-5 text-lg font-bold">Datos de entrega</Typography>
 
         <div className='flex flex-col px-5'>
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <label >Nombre del cliente</label>
                 <input type='text' value={localForm.clientName} onChange={(e) => setLocalForm({ ...localForm, clientName: e.target.value })} />
             </div>
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <label >Dirección</label>
                 <input type='text' value={localForm.address} onChange={(e) => setLocalForm({ ...localForm, address: e.target.value })} />
             </div>
-            {/* <div className='flex flex-col mb-5 gap-4'>
+            {/* <div className='flex flex-col gap-4 mb-5'>
                 <label >Telefono</label>
                 <input type='text' value={localForm.phone} onChange={(e) => setLocalForm({ ...localForm, phone: e.target.value })} />
             </div> */}
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <label >Fecha de entrega</label>
                 <input type='date' value={localForm.date} onChange={(e) => setLocalForm({ ...localForm, date: e.target.value })} />
             </div>
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <label >Hora de entrega</label>
                 <select value={localForm.time} onChange={(e) => setLocalForm({ ...localForm, time: e.target.value })}>
                     {
@@ -230,25 +231,25 @@ const FormTipoDePago = ({ tipoPago, pagoForm, setPagoForm, errorsCard }) => {
     }
 
     return <>
-        <Typography color="gray" className="font-bold px-5 text-lg mb-5">Datos de pago</Typography>
+        <Typography color="gray" className="px-5 mb-5 text-lg font-bold">Datos de pago</Typography>
 
         <div className='flex flex-col px-5 overflow-scroll' style={{ maxHeight: 200 }}>
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <label >Número de tarjeta</label>
                 <input type='text' value={pagoForm.cardNumber} onChange={(e) => setPagoForm({ ...pagoForm, cardNumber: e.target.value })} />
                 <span className='text-red-600'>{errorsCard.messages.cardNumber}</span>
             </div>
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <label >Nombre del titular</label>
                 <input type='text' value={pagoForm.cardName} onChange={(e) => setPagoForm({ ...pagoForm, cardName: e.target.value })} />
                 <span className='text-red-600'>{errorsCard.messages.cardName}</span>
             </div>
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <label >Fecha de expiración</label>
                 <input type='date' value={pagoForm.cardDate} onChange={(e) => setPagoForm({ ...pagoForm, cardDate: e.target.value })} />
                 <span className='text-red-600'>{errorsCard.messages.cardDate}</span>
             </div>
-            <div className='flex flex-col mb-5 gap-4'>
+            <div className='flex flex-col gap-4 mb-5'>
                 <label >CVV</label>
                 <input type='text' value={pagoForm.cardCvv} onChange={(e) => setPagoForm({ ...pagoForm, cardCvv: e.target.value })} />
                 <span className='text-red-600'>{errorsCard.messages.cardCvv}</span>
@@ -258,7 +259,7 @@ const FormTipoDePago = ({ tipoPago, pagoForm, setPagoForm, errorsCard }) => {
 }
 
 
-const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
+const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart, user }) => {
 
     const [activeStep, setActiveStep] = useState(0)
     const [tipoEnvio, setTipoEnvio] = useState(TiposDeEnvio.SUCURSAL);
@@ -385,7 +386,14 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route("orders.store"));
+        /* post(route("orders.store")); */
+
+        axios.post('/api/order', { ...data, user_id: user.id }).then(response => {
+            const { data } = response;
+            window.location.href = route("orders.show", data.id);
+        }).catch(error => {
+            console.log(error)
+        });
     }
 
     const handleNext = (e) => {
@@ -478,16 +486,16 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
 
                     >
                         <Step onClick={() => setActiveStep(0)}>
-                            <ListBulletIcon className="h-5 w-5" />
+                            <ListBulletIcon className="w-5 h-5" />
                         </Step>
                         <Step onClick={() => setActiveStep(1)}>
-                            <ArchiveBoxIcon className="h-5 w-5" />
+                            <ArchiveBoxIcon className="w-5 h-5" />
                         </Step>
                         <Step onClick={() => setActiveStep(2)}>
-                            <Bars2Icon className="h-5 w-5" />
+                            <Bars2Icon className="w-5 h-5" />
                         </Step>
                         <Step onClick={() => setActiveStep(3)}>
-                            <BanknotesIcon className="h-5 w-5" />
+                            <BanknotesIcon className="w-5 h-5" />
                         </Step>
                     </Stepper>
                 </div>
@@ -496,7 +504,7 @@ const Pago = ({ isVisible, onClose, shoppingCart, total, setShoppingCart }) => {
 
             </DialogBody>
             <DialogFooter>
-                <div className='w-full  flex justify-between'>
+                <div className='flex justify-between w-full'>
                     <Button
                         variant="text"
                         onClick={onClose}

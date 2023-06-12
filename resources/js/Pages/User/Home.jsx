@@ -126,16 +126,16 @@ export default function Home({ auth, products }) {
 
             {
                 (shoppingCart.length > 0 && !isVisible) && (<button title="Contact Sale" onClick={() => setShowPaymentModal(true)} style={{ zIndex: 9999 }}
-                    className="fixed z-999 bottom-10 right-8 bg-violet-400 w-40 h-20 rounded-lg  drop-shadow-lg flex flex-col justify-center items-center text-white ">
+                    className="fixed flex flex-col items-center justify-center w-40 h-20 text-white rounded-lg z-999 bottom-10 right-8 bg-violet-400 drop-shadow-lg ">
                     <div className='text-1xl' > {shoppingCart.length} &nbsp; <span>&#128722;</span> </div>
                     <div className='text-2xl'> {formatCurrency(total)} </div>
                 </button>)
             }
             <div >
                 <div className="mb-6">
-                    <div className='flex justify-between items-center mb-4' ref={ref}>
-                        <h1 className="font-semibold text-xl text-gray-800 leading-tight mb-10">Productos</h1>
-                        <div className='flex gap-4 items-center'>
+                    <div className='flex items-center justify-between mb-4' ref={ref}>
+                        <h1 className="mb-10 text-xl font-semibold leading-tight text-gray-800">Productos</h1>
+                        <div className='flex items-center gap-4'>
                             <div className='text-1xl' > {shoppingCart.length} &nbsp; <span>&#128722;</span> </div>
                             <div className='text-2xl'> {formatCurrency(total)} </div>
                         </div>
@@ -160,7 +160,7 @@ export default function Home({ auth, products }) {
                                         {description}
                                     </Typography>
                                 </CardBody>
-                                <CardFooter className="pt-0 flex flex-col gap-2 justify-between items-center">
+                                <CardFooter className="flex flex-col items-center justify-between gap-2 pt-0">
                                     <Button className='w-8/12' color='indigo' onClick={() => handleAddToCart(products[index])}>Agregar al carrito</Button>
                                     <Button className='w-8/12' color='indigo' onClick={() => handleCustomProduct(products[index])} >Personalizar</Button>
                                 </CardFooter>
@@ -209,8 +209,8 @@ export default function Home({ auth, products }) {
                                         <ListItem key={id}>
                                             <div className='flex justify-between w-full'>
                                                 <Typography>{name}</Typography>
-                                                <div className='flex gap-4 items-center'>
-                                                    <Typography className="text-violet-600 font-bold">
+                                                <div className='flex items-center gap-4'>
+                                                    <Typography className="font-bold text-violet-600">
                                                         ${price}
                                                         {
                                                             customProduct.multiplier > 1 && (
@@ -259,7 +259,7 @@ export default function Home({ auth, products }) {
                     </Button>
                 </DialogFooter>
             </Dialog>
-            <Pago isVisible={showPaymentModal} onClose={() => setShowPaymentModal(false)} shoppingCart={shoppingCart} setShoppingCart={setshoppingCart} total={total} />
+            <Pago user={auth.user} isVisible={showPaymentModal} onClose={() => setShowPaymentModal(false)} shoppingCart={shoppingCart} setShoppingCart={setshoppingCart} total={total} />
         </AuthenticatedLayout >
     );
 }
