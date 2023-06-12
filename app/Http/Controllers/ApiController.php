@@ -39,6 +39,10 @@ class ApiController extends Controller
     function deleteProduct(Request $request, $id)
     {
         $product = Product::find($id);
+
+        Ingredient::where('product_id', $id)->delete();
+
+
         $product->delete();
 
         return response()->json($product, 200);
