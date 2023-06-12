@@ -1,6 +1,6 @@
 import React from "react";
 import { Inertia } from "@inertiajs/inertia";
-import { InertiaLink, useForm } from "@inertiajs/inertia-react";
+import { useForm } from "@inertiajs/inertia-react";
 import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
@@ -24,12 +24,12 @@ const Create = ({ auth, error }) => {
             <div className="container flex flex-col justify-center mx-auto">
                 <div>
                     <h1 className="mb-8 text-3xl font-bold">
-                        <InertiaLink
+                        <a
                             href={route("products.index")}
                             className="text-violet-600 hover:text-violet-700"
                         >
                             Productos
-                        </InertiaLink>
+                        </a>
                         <span className="font-medium text-violet-600"> / </span>
                         Crear
                     </h1>
@@ -106,7 +106,7 @@ const Create = ({ auth, error }) => {
                         <div className="mt-4">
                             <button
                                 type="submit"
-                                className="px-6 py-2 font-bold text-white bg-violet-600 rounded"
+                                className="px-6 py-2 font-bold text-white rounded bg-violet-600"
                             >
                                 Guardar
                             </button>

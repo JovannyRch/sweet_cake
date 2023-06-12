@@ -1,6 +1,6 @@
 import React from "react";
 import { Inertia } from "@inertiajs/inertia";
-import { InertiaLink, useForm } from "@inertiajs/inertia-react";
+import { useForm } from "@inertiajs/inertia-react";
 import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { Card, IconButton, List, ListItem, Typography } from "@material-tailwind/react";
@@ -41,12 +41,12 @@ const Edit = ({ auth, product }) => {
                 <div className="container flex flex-col justify-center mx-auto">
                     <div>
                         <h1 className="mb-8 text-3xl font-bold">
-                            <InertiaLink
+                            <a
                                 href={route("products.index")}
                                 className="text-violet-600 hover:text-indigo-700"
                             >
                                 Productos
-                            </InertiaLink>
+                            </a>
                             <span className="font-medium text-violet-600 "> / </span>
                             Detalles
                         </h1>
@@ -55,7 +55,7 @@ const Edit = ({ auth, product }) => {
                         <form name="createForm" onSubmit={handleSubmit}>
                             <div className="flex flex-col">
 
-                                <div className="mb-4 flex items-center w-full justify-center">
+                                <div className="flex items-center justify-center w-full mb-4">
                                     <img src={`/images/${product.img}`} alt="imagen" className="w-40 h-40 rounded-full" />
                                 </div>
 
@@ -111,7 +111,7 @@ const Edit = ({ auth, product }) => {
                             <div className="flex justify-between">
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 text-white bg-violet-600 rounded"
+                                    className="px-4 py-2 text-white rounded bg-violet-600"
                                 >
                                     Actualizar
                                 </button>
@@ -131,7 +131,7 @@ const Edit = ({ auth, product }) => {
 
 
 
-                        <div className="max-w-3xl p-4 bg-white mt-10">
+                        <div className="max-w-3xl p-4 mt-10 bg-white">
                             <h4 className="mb-8 text-2xl font-bold">
                                 Precios por ingrediente adicional
                             </h4>
@@ -145,7 +145,7 @@ const Edit = ({ auth, product }) => {
                                 product.ingredients.length !== 0 && <Card className="w-96">
                                     <List>
                                         {product.ingredients.map((ingredient) => (<ListItem key={ingredient.id}>
-                                            <div className="flex w-full justify-between">
+                                            <div className="flex justify-between w-full">
                                                 <div>
                                                     <Typography variant="h6" color="blue-gray">
                                                         {ingredient.name}
@@ -172,8 +172,8 @@ const Edit = ({ auth, product }) => {
 
                         </div>
 
-                        <div className="max-w-3xl p-4 bg-white rounded shadow mt-10">
-                            <h6 className="mb-8 text-1xl font-bold">
+                        <div className="max-w-3xl p-4 mt-10 bg-white rounded shadow">
+                            <h6 className="mb-8 font-bold text-1xl">
                                 Agregar ingrediente
                             </h6>
                             <form className="flex items-center mt-10" onSubmit={handleAddIngredient}>
@@ -211,7 +211,7 @@ const Edit = ({ auth, product }) => {
                                 <button
 
                                     type="submit"
-                                    className="px-4 py-2 text-white bg-violet-600 rounded"
+                                    className="px-4 py-2 text-white rounded bg-violet-600"
                                 >
                                     Agregar
                                 </button>

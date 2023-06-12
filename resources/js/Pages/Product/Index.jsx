@@ -1,7 +1,6 @@
 import React from "react";
 import { Head } from '@inertiajs/react';
 import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
-import { InertiaLink } from "@inertiajs/inertia-react";
 
 const Index = ({ auth, products: data }) => {
 
@@ -39,47 +38,47 @@ const Index = ({ auth, products: data }) => {
 
 
                                 <td className="border-t">
-                                    <InertiaLink
+                                    <a
                                         href={route("products.edit", id)}
                                         className="flex items-center px-6 py-4 focus:text-indigo-700 focus:outline-none"
                                     >
                                         {id}
-                                    </InertiaLink>
+                                    </a>
                                 </td>
                                 <td className="border-t">
-                                    <InertiaLink
+                                    <a
                                         href={route("products.edit", id)}
                                         className="flex items-center px-6 py-4 focus:text-indigo-700 focus:outline-none"
                                     >
                                         <img src={`/images/${img}`} alt="imagen" className="w-20 h-20 rounded-full" />
-                                    </InertiaLink>
+                                    </a>
 
                                 </td>
                                 <td className="border-t">
-                                    <InertiaLink
+                                    <a
                                         href={route("products.edit", id)}
                                         className="flex items-center px-6 py-4 focus:text-indigo-700 focus:outline-none"
                                     >
                                         {name}
-                                    </InertiaLink>
+                                    </a>
                                 </td>
                                 <td className="border-t">
-                                    <InertiaLink
+                                    <a
                                         tabIndex="1"
                                         className="flex items-center px-6 py-4"
                                         href={route("products.edit", id)}
                                     >
                                         {price}
-                                    </InertiaLink>
+                                    </a>
                                 </td>
                                 <td className="border-t">
-                                    <InertiaLink
+                                    <a
                                         tabIndex="1"
                                         className="px-4 py-2 text-sm text-white bg-indigo-600 rounded"
                                         href={route("products.edit", id)}
                                     >
                                         Ver detalles
-                                    </InertiaLink>
+                                    </a>
                                 </td>
                             </tr>
                         ))}

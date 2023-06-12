@@ -3,7 +3,6 @@ import { Head } from "@inertiajs/react";
 import moment from "moment";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
 import AdminAuthenticatedLayout from "../../Layouts/AdminAuthenticatedLayout";
-import { InertiaLink } from "@inertiajs/inertia-react";
 
 
 const TABLE_HEAD = ["# Pedido", "Cantidad productos", "Empleado", "Estatus"];
@@ -17,19 +16,19 @@ const Index = ({ auth, penging_orders, delivered_orders }) => {
         <AdminAuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
 
-            <Card className="overflow-scroll h-full w-full">
+            <Card className="w-full h-full overflow-scroll">
                 <CardBody>
 
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex items-center justify-between mb-6">
                         <Typography color="blueGray" className="text-2xl font-bold text-violet-600" >
                             Ordenes pendientes
                         </Typography>
                     </div>
-                    <table className="w-full min-w-max table-auto text-left">
+                    <table className="w-full text-left table-auto min-w-max">
                         <thead>
                             <tr>
                                 {TABLE_HEAD.map((head) => (
-                                    <th key={head} className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                                    <th key={head} className="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                                         <Typography
                                             variant="small"
                                             color="blue-gray"
@@ -65,13 +64,13 @@ const Index = ({ auth, penging_orders, delivered_orders }) => {
                                         </td>
 
                                         <td className={classes}>
-                                            <InertiaLink
+                                            <a
                                                 tabIndex="1"
                                                 className="px-4 py-2 text-sm text-white bg-indigo-600 rounded"
                                                 href={route("orders.show", id)}
                                             >
                                                 Ver
-                                            </InertiaLink>
+                                            </a>
                                         </td>
                                     </tr>
                                 );
@@ -81,19 +80,19 @@ const Index = ({ auth, penging_orders, delivered_orders }) => {
                 </CardBody>
             </Card>
 
-            <Card className="overflow-scroll h-full w-full mt-10">
+            <Card className="w-full h-full mt-10 overflow-scroll">
 
                 <CardBody>
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex items-center justify-between mb-6">
                         <Typography color="blueGray" className="text-2xl font-bold text-violet-600">
                             Ordenes entregadas
                         </Typography>
                     </div>
-                    <table className="w-full min-w-max table-auto text-left">
+                    <table className="w-full text-left table-auto min-w-max">
                         <thead>
                             <tr>
                                 {TABLE_HEAD.map((head) => (
-                                    <th key={head} className="border-b border-blue-gray-100 bg-gray-50 p-4">
+                                    <th key={head} className="p-4 border-b border-blue-gray-100 bg-gray-50">
                                         <Typography
                                             variant="small"
                                             color="blue-gray"
@@ -130,13 +129,13 @@ const Index = ({ auth, penging_orders, delivered_orders }) => {
 
                                         <td className={classes}>
 
-                                            <InertiaLink
+                                            <a
                                                 tabIndex="1"
                                                 className="px-4 py-2 text-sm text-white bg-indigo-600 rounded"
                                                 href={route("orders.show", id)}
                                             >
                                                 Ver
-                                            </InertiaLink>
+                                            </a>
                                         </td>
                                     </tr>
                                 );
