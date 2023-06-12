@@ -7,18 +7,18 @@ const Index = ({ auth, products: data }) => {
 
     return (<AdminAuthenticatedLayout
         user={auth.user}
-        header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Productos</h2>}
+        header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Productos</h2>}
     >
         <Head title="Productos" />
 
         <div className="container mx-auto">
             <div className="flex items-center justify-between mb-6">
-                <InertiaLink
-                    className="px-6 py-2 text-white bg-violet-600 rounded-md focus:outline-none"
+                <a
+                    className="px-6 py-2 text-white rounded-md bg-violet-600 focus:outline-none"
                     href={route("products.create")}
                 >
                     Crear Producto
-                </InertiaLink>
+                </a>
             </div>
 
             <div className="overflow-x-auto bg-white rounded shadow">
